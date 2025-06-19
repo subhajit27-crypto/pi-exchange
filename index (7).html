@@ -1,0 +1,161 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pi Exchange | STPL</title>
+
+  <style>
+    :root {
+      --bg: #f9f9f9;
+      --text: #333;
+      --header: #2c3e50;
+      --nav: #34495e;
+      --card: #ffffff;
+    }
+    [data-theme="dark"] {
+      --bg: #121212;
+      --text: #ffffff;
+      --header: #1c1c1c;
+      --nav: #2b2b2b;
+      --card: #1f1f1f;
+    }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+    header, footer {
+      background-color: var(--header);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    nav {
+      background-color: var(--nav);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    nav a {
+      color: white;
+      margin: 0 1em;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .theme-toggle {
+      background-color: white;
+      color: black;
+      border: none;
+      padding: 0.5em 1em;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 2rem;
+    }
+    .card {
+      background-color: var(--card);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2, h3 {
+      margin: 0.5em 0;
+    }
+    @media (max-width: 600px) {
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      nav a, .theme-toggle {
+        margin: 0.5em 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>STPL – SJ Technology Private Limited</h1>
+    <h2>PI EXCHANGE</h2>
+  </header>
+
+  <nav>
+    <div>
+      <a href="#">Home</a>
+      <a href="#">Products</a>
+      <a href="#">Contact</a>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Theme</button>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <h3>Live Crypto Prices</h3>
+      <p>Bitcoin (BTC): <span id="btc-price">Loading...</span></p>
+      <p>Ethereum (ETH): <span id="eth-price">Loading...</span></p>
+      <p>Pi Network (PI): <span id="pi-price">Loading...</span></p>
+      <p>Dogecoin (DOGE): <span id="doge-price">Loading...</span></p>
+      <p>Solana (SOL): <span id="sol-price">Loading...</span></p>
+      <p>Tether (USDT): <span id="usdt-price">Loading...</span></p>
+    </div>
+
+    <div class="card">
+      <h3>About Pi Exchange</h3>
+      <p>Pi Exchange is a secure, user-friendly platform designed by STPL for real-time crypto and fiat trading with top-grade security and seamless conversion tools.</p>
+    </div>
+
+    <div class="card">
+      <h3>Contact Us</h3>
+      <p>Email: <a href="mailto:piexchange.info@gmail.com">piexchange.info@gmail.com</a></p>
+      <p>Phone: +91 6294124782</p>
+      <p>Address: MAHINDRA VIDYAPEETH SCHOOL, CHHOTO PURULIA, KETUGRAM, WB 713140</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 STPL – Pi Exchange. Empowering the Future of Digital Finance.</p>
+  </footer>
+
+  <script>
+    async function fetchPrices() {
+      try {
+        const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,pi-network,dogecoin,solana,tether&vs_currencies=usd");
+        const data = await res.json();
+        document.getElementById("btc-price").textContent = "$" + data.bitcoin.usd.toLocaleString();
+        document.getElementById("eth-price").textContent = "$" + data.ethereum.usd.toLocaleString();
+        document.getElementById("pi-price").textContent = data['pi-network']?.usd ? "$" + data['pi-network'].usd.toLocaleString() : "Not listed";
+        document.getElementById("doge-price").textContent = "$" + data.dogecoin.usd.toLocaleString();
+        document.getElementById("sol-price").textContent = "$" + data.solana.usd.toLocaleString();
+        document.getElementById("usdt-price").textContent = "$" + data.tether.usd.toLocaleString();
+      } catch (err) {
+        const prices = ["btc", "eth", "pi", "doge", "sol", "usdt"];
+        prices.forEach(id => document.getElementById(id + "-price").textContent = "Error");
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute("data-theme");
+      const next = current === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+    }
+
+    (function () {
+      const savedTheme = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    })();
+
+    fetchPrices();
+    setInterval(fetchPrices, 60000); // auto-refresh every 60 sec
+  </script>
+
+</body>
+</html>
